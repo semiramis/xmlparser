@@ -8,6 +8,8 @@ import java.util.Stack;
 public class XmlParser {
 
 	public static void parse(String text) throws XmlSyntaxErrorException {
+		
+		final int ERROR_AREA = 30;
 
 		char[] chars = text.toCharArray();
 		boolean inTag = false;
@@ -43,14 +45,14 @@ public class XmlParser {
 
 				break;
 
-			case '>':
+			case '>': // TODO cooment end
 				if (inComment && chars[i - 2] == '-' && chars[i - 1] == '-') {
 					inComment = false;
 				} else if (!inComment && !inQuotes) {
 					
 					if(chars[i-1] == '/'){
 						if(chars[i-2] != ' '){
-							throw new XmlSyntaxErrorException("Error - whitespace expected near: \n"+ text.substring((i-10 < 0 ? 0 : i-10), (i+10>chars.length-1 ? chars.length-1 : i+10)));
+							throw new XmlSyntaxErrorException("Error - whitespace expected near: \n"+ text.substring((i-ERROR_AREA < 0 ? 0 : i-ERROR_AREA), (i+ERROR_AREA>chars.length-1 ? chars.length-1 : i+ERROR_AREA)));
 						}
 						
 					}else{
@@ -58,7 +60,7 @@ public class XmlParser {
 							String opening = stack.pop();
 							String closing = tag.toString().substring(3);
 							if(!opening.equals(closing)){
-								throw new XmlSyntaxErrorException("Error - \"</" + closing + ">\" expected near: \n"+ text.substring((i-10 < 0 ? 0 : i-10), (i+10>chars.length-1 ? chars.length-1 : i+10)));
+								throw new XmlSyntaxErrorException("Error - \"</" + opening + ">\" expected near: \n"+ text.substring((i-ERROR_AREA < 0 ? 0 : i-ERROR_AREA), (i+ERROR_AREA>chars.length-1 ? chars.length-1 : i+ERROR_AREA)));
 							}
 						}else{
 							stack.add(tag.toString().substring(1));
