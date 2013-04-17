@@ -7,7 +7,7 @@ public class ParserTest {
 	 */
 	public static void main(String[] args) {
 		
-		String xml = "<root><abc /></a></root>";
+		String xml = "<root>  <abc /> </root>";
 		try {
 			XmlParser.parse(xml);
 		} catch (XmlSyntaxErrorException e) {

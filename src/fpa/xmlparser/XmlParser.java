@@ -8,7 +8,7 @@ import java.util.Stack;
 public class XmlParser {
 
 	public static void parse(String text) throws XmlSyntaxErrorException {
-		
+
 		final int ERROR_AREA = 30;
 
 		char[] chars = text.toCharArray();
@@ -27,9 +27,13 @@ public class XmlParser {
 
 			switch (chars[i]) {
 			case '<':
+				if (inTag) {
+					throw new XmlSyntaxErrorException("illegal '<'", i, text,ERROR_AREA);
+
+				}
 				if (!inComment && !inQuotes) {
-					
-					if(chars[i+1] == '/'){
+
+					if (chars[i + 1] == '/') {
 						inClosingTag = true;
 					}
 
@@ -45,31 +49,36 @@ public class XmlParser {
 
 				break;
 
-			case '>': // TODO cooment end
-				if (inComment && chars[i - 2] == '-' && chars[i - 1] == '-') {
-					inComment = false;
-				} else if (!inComment && !inQuotes) {
-					
-					if(chars[i-1] == '/'){
-						if(chars[i-2] != ' '){
-							throw new XmlSyntaxErrorException("Error - whitespace expected near: \n"+ text.substring((i-ERROR_AREA < 0 ? 0 : i-ERROR_AREA), (i+ERROR_AREA>chars.length-1 ? chars.length-1 : i+ERROR_AREA)));
-						}
-						
-					}else{
-						if(inClosingTag){
-							String opening = stack.pop();
-							String closing = tag.toString().substring(3);
-							if(!opening.equals(closing)){
-								throw new XmlSyntaxErrorException("Error - \"</" + opening + ">\" expected near: \n"+ text.substring((i-ERROR_AREA < 0 ? 0 : i-ERROR_AREA), (i+ERROR_AREA>chars.length-1 ? chars.length-1 : i+ERROR_AREA)));
+			case '>':
+				if (inTag) {
+					if (inComment && chars[i - 2] == '-' && chars[i - 1] == '-') {
+						inComment = false;
+					} else if (!inComment && !inQuotes) {
+
+						if (chars[i - 1] == '/') {
+							if (chars[i - 2] != ' ') {
+								throw new XmlSyntaxErrorException("whitespace expected", i, text,ERROR_AREA);
+
 							}
-						}else{
-							stack.add(tag.toString().substring(1));
+
+						} else {
+							if (inClosingTag) {
+								String opening = stack.pop().trim();
+								String closing = tag.toString().substring(3)
+										.trim();
+								if (!opening.equals(closing)) {
+									throw new XmlSyntaxErrorException("\"</"+ opening + ">\" expected", i,text, ERROR_AREA);
+
+								}
+							} else {
+								stack.add(tag.toString().substring(1));
+							}
+
 						}
-						
+						inTag = false;
+						inClosingTag = false;
+						tag = tag.delete(0, tag.length() - 1);
 					}
-					inTag = false;
-					inClosingTag = false;
-					tag = tag.delete(0, tag.length()-1);
 				}
 
 				break;
@@ -90,12 +99,12 @@ public class XmlParser {
 
 			// strings bauen und stack überprüfen
 
-			if(inTag){
+			if (inTag) {
 				tag.append(chars[i]);
 			}
 			xmlDoc.append(chars[i]);
 		}
-		
+
 		System.out.println(xmlDoc.toString());
 	}
 }
