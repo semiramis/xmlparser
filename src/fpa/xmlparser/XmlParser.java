@@ -58,14 +58,21 @@ public class XmlParser {
 
 					if (chars[i + 1] == '/') {
 						inClosingTag = true;
+						inTag = true;
 					}
 
-					if (chars[i + 1] == '!' && chars[i + 2] == '-'
+					else if (chars[i + 1] == '!' && chars[i + 2] == '-'
 							&& chars[i + 3] == '-') {
 						inComment = true;
 
-					} else {
+					} 
+					
+					else if(){
 						inTag = true;
+					}
+					
+					else{
+						
 					}
 
 				}
@@ -78,18 +85,13 @@ public class XmlParser {
 						inComment = false;
 					} else if (!inComment && !inQuotes) {
 
-						if (chars[i - 1] == '/') {
-							if (chars[i - 2] != ' ') {
-								throw new XmlSyntaxErrorException("whitespace expected", i, text,ERROR_AREA);
-
-							}
-
-						} else {
+						if (chars[i - 1] != '/') {
 							if (inClosingTag) {
 								String opening = stack.pop().trim();
-								String closing = tag.toString().substring(3)
+								String closing = tag.toString().substring(2)
 										.trim();
 								if (!opening.equals(closing)) {
+									
 									throw new XmlSyntaxErrorException("\"</"+ opening + ">\" expected", i,text, ERROR_AREA);
 
 								}
@@ -97,10 +99,13 @@ public class XmlParser {
 								stack.add(tag.toString().substring(1));
 							}
 
-						}
+
+						} 
+						
+						
 						inTag = false;
 						inClosingTag = false;
-						tag = tag.delete(0, tag.length() - 1);
+						tag = tag.delete(0, tag.length());
 					}
 				}
 
@@ -131,8 +136,9 @@ public class XmlParser {
 		if(stack.empty()){
 		System.out.println(xmlDoc.toString());
 		}
-		else
-	    throw new RootElementNotClosedException("There are opened Elements left...");
+		else{
+			throw new RootElementNotClosedException("There are opened Elements left...");
+		}
 		
 	}
 }
