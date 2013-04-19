@@ -4,10 +4,33 @@ import java.util.Stack;
 
 /**
  * Let's play a game :)
+ * @author Maria Lindemann, Franz Benthin, Kathrin Konkol
+ * 
  */
 public class XmlParser {
-
-	public static void parse(String text) throws XmlSyntaxErrorException {
+	
+	/*
+	 * parse erwartet einen String im xml Format
+	 * folgende Syntax Regeln werden berücksichtigt:
+	 * passende opening und closing tags
+	 * erkennt empty tags und wirft eine exception, falls das leerzeichen fehlt
+	 * < außerhalb eines tags wirft eine exception
+	 * > außerhalb eines tags wird erkannt und nicht berücksichtigt
+	 * tagnamen mit case sensitiv
+	 * vor der ausgabe wird geprüft, ob alle opening tags geschlossen wurden, die datei also 
+	 * 	vollständig abgearbeitet werden konnte
+	 * TODO
+	 * kommentare
+	 * erkennung eines kommentars mit richtiger syntax
+	 * 
+	 * arbeitsweise der methode:
+	 * string wird char für char gelesen. bestimmte symbole werden auf konditionen geprüft und als openingtag,
+	 * closingtag, emptytag, kommentar oder nichts von alledem erkannt. dementsprechend wird ein opening tag auf 
+	 * den stack geschmissen. der nächste closingtag, der erkannt wird, wird direkt mit dem obersten opening tag 
+	 * auf dem stack verglichen. stimmen die strings nicht überein, wird eine exception ausgelöst. 
+	 * 
+	 */
+	public static void parse(String text) throws XmlSyntaxErrorException, RootElementNotClosedException {
 
 		final int ERROR_AREA = 30;
 
@@ -97,7 +120,7 @@ public class XmlParser {
 			// hier um weitere FÃ¤lle erweitern
 			}
 
-			// strings bauen und stack Ã¼berprÃ¼fen
+			// strings bauen 
 
 			if (inTag) {
 				tag.append(chars[i]);
@@ -105,6 +128,11 @@ public class XmlParser {
 			xmlDoc.append(chars[i]);
 		}
 
+		if(stack.empty()){
 		System.out.println(xmlDoc.toString());
+		}
+		else
+	    throw new RootElementNotClosedException("There are opened Elements left...");
+		
 	}
 }

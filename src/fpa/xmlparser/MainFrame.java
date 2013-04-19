@@ -198,9 +198,9 @@ public class MainFrame extends JFrame {
 			return ("*." + extension);
 		}
 	}
-
-	public static void main(String[] args) {
-		new MainFrame();
-	}
+    //
+    //public static void main(String[] args) {
+	//	new MainFrame();
+	//}
 
 }

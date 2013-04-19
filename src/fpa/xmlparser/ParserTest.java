@@ -13,7 +13,10 @@ public class ParserTest {
 		} catch (XmlSyntaxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch(RootElementNotClosedException e){
+			
 		}
+		
 	
 
 	}
