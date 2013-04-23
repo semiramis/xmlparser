@@ -11,23 +11,23 @@ public class XmlParser {
 	
 	/*
 	 * parse erwartet einen String im xml Format
-	 * folgende Syntax Regeln werden berücksichtigt:
+	 * folgende Syntax Regeln werden berï¿½cksichtigt:
 	 * passende opening und closing tags
 	 * erkennt empty tags und wirft eine exception, falls das leerzeichen fehlt
-	 * < außerhalb eines tags wirft eine exception
-	 * > außerhalb eines tags wird erkannt und nicht berücksichtigt
+	 * < auï¿½erhalb eines tags wirft eine exception
+	 * > auï¿½erhalb eines tags wird erkannt und nicht berï¿½cksichtigt
 	 * tagnamen mit case sensitiv
-	 * vor der ausgabe wird geprüft, ob alle opening tags geschlossen wurden, die datei also 
-	 * 	vollständig abgearbeitet werden konnte
+	 * vor der ausgabe wird geprï¿½ft, ob alle opening tags geschlossen wurden, die datei also 
+	 * 	vollstï¿½ndig abgearbeitet werden konnte
 	 * TODO
 	 * kommentare
 	 * erkennung eines kommentars mit richtiger syntax
 	 * 
 	 * arbeitsweise der methode:
-	 * string wird char für char gelesen. bestimmte symbole werden auf konditionen geprüft und als openingtag,
+	 * string wird char fï¿½r char gelesen. bestimmte symbole werden auf konditionen geprï¿½ft und als openingtag,
 	 * closingtag, emptytag, kommentar oder nichts von alledem erkannt. dementsprechend wird ein opening tag auf 
-	 * den stack geschmissen. der nächste closingtag, der erkannt wird, wird direkt mit dem obersten opening tag 
-	 * auf dem stack verglichen. stimmen die strings nicht überein, wird eine exception ausgelöst. 
+	 * den stack geschmissen. der nï¿½chste closingtag, der erkannt wird, wird direkt mit dem obersten opening tag 
+	 * auf dem stack verglichen. stimmen die strings nicht ï¿½berein, wird eine exception ausgelï¿½st. 
 	 * 
 	 */
 	public static void parse(String text) throws XmlSyntaxErrorException, RootElementNotClosedException {
@@ -59,19 +59,13 @@ public class XmlParser {
 					if (chars[i + 1] == '/') {
 						inClosingTag = true;
 						inTag = true;
-					}
-
-					else if (chars[i + 1] == '!' && chars[i + 2] == '-'
+					}else if (chars[i + 1] == '!' && chars[i + 2] == '-'
 							&& chars[i + 3] == '-') {
 						inComment = true;
 
-					} 
-					
-					else if(){
+					}else if(){
 						inTag = true;
-					}
-					
-					else{
+					}else{
 						
 					}
 
