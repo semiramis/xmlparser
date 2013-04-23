@@ -68,7 +68,7 @@ public class XmlParser {
 							&& chars[i + 3] == '-') {
 						inComment = true;
 
-					}else if(){
+					}else if(true){
 					} 
 					
 					//pr�fen auf Process Instruction
@@ -78,9 +78,9 @@ public class XmlParser {
 					
 					//wann befinden wir uns NUR in einem opening tag,
 					//buchstaben, - ,. , :, _
-					else if( ){
+					else if( true){
 						inTag = true;
-					}else{
+					}else if(true){
 					}
 					
 					//�brig bleibt alles mit syntaxfehler nach < oder < zwischen zwei tags: fehlerhafte eingabe
