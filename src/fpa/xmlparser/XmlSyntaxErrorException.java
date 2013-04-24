@@ -8,9 +8,16 @@ public class XmlSyntaxErrorException extends Exception {
 
 	}
 
-	public XmlSyntaxErrorException(String message, int i, String text, int errorArea) {
-		super("Error - "+ message	+ " near: \n"	+ text.substring((i - errorArea < 0 ? 0 : i - errorArea), 
-				(i	+ errorArea > text.length() - 1 ? text.length() - 1 : i	+ errorArea)));
+	public XmlSyntaxErrorException(String message, int row, int i, String text,
+			int errorArea) {
+		super("Error in line "
+				+ row
+				+ ": "
+				+ message
+				+ " near: \n"
+				+ text.substring((i - errorArea < 0 ? 0 : i - errorArea), (i
+						+ errorArea > text.length() - 1 ? text.length() - 1 : i
+						+ errorArea)));
 	}
 
 }

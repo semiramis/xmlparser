@@ -6,19 +6,17 @@ public class ParserTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
 		String xml = "<root><abc></abc>";
 		try {
-			XmlParser.parse(xml);
+			XmlParser.parse(xml, true);
 		} catch (XmlSyntaxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch(RootElementNotClosedException e){
-		
+		} catch (RootElementNotClosedException e) {
+
 			e.printStackTrace();
 		}
-		
-	
 
 	}
 
