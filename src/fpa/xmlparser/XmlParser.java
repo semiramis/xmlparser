@@ -53,13 +53,9 @@ public class XmlParser {
 		boolean inQuotes = false;
 		boolean inComment = false;
 		boolean inPI = false;
-		boolean inElement = false;
 
-		ArrayList<String> cList = new ArrayList<String>();
 		int depth = 0;
 		int rowCount = 0;
-		ArrayList<String> rows = new ArrayList<String>();
-		ArrayList<String> eList = new ArrayList<String>();
 		ArrayList<String[]> sList = new ArrayList<String[]>();
 		StringBuilder xmlDoc = new StringBuilder();
 		StringBuilder element = new StringBuilder();
@@ -76,9 +72,7 @@ public class XmlParser {
 
 			switch (chars[i]) {
 			case '<':
-//				inElement = false;
-				// eList.addAll(cList);
-				// eList.add(element.toString());
+				if(!element.toString().equals(""))
 				sList.add(new String[] { element.toString(), XmlParser.ELEMENT });
 				if (inTag) {
 					throw new XmlSyntaxErrorException("illegal '<'", rowCount, i, text, ERROR_AREA);
@@ -114,14 +108,9 @@ public class XmlParser {
 							if (inClosingTag) {
 								String opening = stack.pop().trim();
 								String closing = tag.toString().substring(2).trim();
-								// System.out.println(opening);
-								// eList.add(opening);
-								sList.add(new String[] { opening, XmlParser.TAG });
-								// System.out.println(closing);
-								// eList.add(closing);
-								// for(int j = 0; j < rowCount; i++){
-								// System.out.print("\t");
-								// }
+
+								sList.add(new String[] { closing, XmlParser.CLOSING_TAG });
+
 								if (!opening.equals(closing)) {
 
 									throw new XmlSyntaxErrorException("\"</" + opening + ">\" expected", rowCount, i,
@@ -130,11 +119,8 @@ public class XmlParser {
 								}
 							} else {
 
-								// rowCount++;
 								stack.add(tag.toString().substring(1));
-								// System.out.println(stack.lastElement());
-								// eList.add(stack.lastElement());
-								sList.add(new String[] { stack.lastElement(), XmlParser.CLOSING_TAG });
+								sList.add(new String[] { stack.lastElement(), XmlParser.TAG });
 
 							}
 
@@ -151,7 +137,6 @@ public class XmlParser {
 						// syntaxfehler bei erstellung des PI
 					}
 				}
-//				inElement = true;
 
 				break;
 
@@ -178,8 +163,6 @@ public class XmlParser {
 			default:
 				if (!inComment && !inTag && !inClosingTag) {
 					element.append(chars[i]);
-					// System.out.println(el.toString());
-					// System.out.print(chars[i]);
 				} else {
 					element = new StringBuilder();
 				}
@@ -210,12 +193,14 @@ public class XmlParser {
 
 		int k = 0;
 		for (String[] s1 : sList) {
+//			System.out.println(s1[1]);
 			if (!s1[0].equals("")) {
 				if (s1[1].equals(XmlParser.TAG)) {
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
-					System.out.println("tag" + k);
+					k++;
+//					System.out.println("tag" + k);
 					str.append(s1[0] + "\n");
 				}
 				if (s1[1].equals(XmlParser.ELEMENT)) {
@@ -225,6 +210,7 @@ public class XmlParser {
 					str.append(s1[0] + "\n");
 				}
 				if (s1[1].equals(XmlParser.CLOSING_TAG)) {
+					k--;
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
