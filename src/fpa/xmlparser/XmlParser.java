@@ -5,7 +5,9 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.text.html.HTMLDocument.Iterator;
+
+
+
 
 /**
  * Let's play a game :)
@@ -19,6 +21,7 @@ public class XmlParser {
 	public static final String TAG = "TAG";
 	public static final String CLOSING_TAG = "CLOSING_TAG";
 	public static final String ELEMENT = "ELEMENT";
+	public static final String PROCESS_INSTR = "PROCESS_INSTRUCTION";
 
 	/*
 	 * parse erwartet einen String im xml Format folgende Syntax Regeln werden
@@ -121,7 +124,7 @@ public class XmlParser {
 
 								stack.add(tag.toString().substring(1));
 								sList.add(new String[] { stack.lastElement(), XmlParser.TAG });
-
+								
 							}
 
 						}
@@ -132,6 +135,7 @@ public class XmlParser {
 					} else if (inPI && chars[i - 1] == '?') {
 						// ende der process instruction
 						processInstruction.append("\n\n");
+//						sList.add(new String[]{processInstruction.toString(), XmlParser.PROCESS_INSTR});
 						inPI = false;
 					} else if (inPI && chars[i - 1] != '?') {
 						// syntaxfehler bei erstellung des PI
@@ -167,6 +171,11 @@ public class XmlParser {
 					if(!element.equals(""))
 					element = new StringBuilder();
 				}
+				
+				if(inPI){
+					sList.add(new String[]{processInstruction.toString(), XmlParser.PROCESS_INSTR});
+					inPI = false;
+				}
 				break;
 
 			}
@@ -175,9 +184,7 @@ public class XmlParser {
 
 			if (inTag) {
 				tag.append(chars[i]);
-			} else if (inPI) {
-				processInstruction.append(chars[i]);
-			}
+			} 
 			xmlDoc.append(chars[i]);
 		}
 
@@ -186,6 +193,7 @@ public class XmlParser {
 		} else {
 			throw new RootElementNotClosedException("There are opened Elements left...");
 		}
+		
 
 	}
 
@@ -214,6 +222,9 @@ public class XmlParser {
 						str.append("\t");
 					}
 					str.append("<"+s1[0]+">" + "\n");
+				}
+				if(s1[1].equals(XmlParser.PROCESS_INSTR)){
+					str.append(s1[0] + "\n\n");
 				}
 			}
 		}

@@ -9,8 +9,13 @@ public class ParserTest {
 
 		String xml = "<root><abc></abc>";
 		String xml2 = "<quelle><adresse>http://www.willy-online.de/</adresse><beschreibung>alles zum wichtigsten Teil am Manne</beschreibung></quelle>";
+		String xml3 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"+
+				"<verzeichnis><titel>Wikipedia Städteverzeichnis</titel><eintrag>"+
+				"<stichwort>Genf</stichwort><eintragstext>Genf ist der Sitz von ...</eintragstext>"+
+				"</eintrag><eintrag><stichwort>Köln</stichwort><eintragstext>Köln ist eine Stadt, die ...</eintragstext>"+
+				"</eintrag></verzeichnis>";
 		try {
-			XmlParser.parse(xml2, true);
+			XmlParser.parse(xml3, true);
 		} catch (XmlSyntaxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
