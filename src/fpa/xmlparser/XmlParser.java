@@ -164,6 +164,7 @@ public class XmlParser {
 				if (!inComment && !inTag && !inClosingTag) {
 					element.append(chars[i]);
 				} else {
+					if(!element.equals(""))
 					element = new StringBuilder();
 				}
 				break;
@@ -193,15 +194,13 @@ public class XmlParser {
 
 		int k = 0;
 		for (String[] s1 : sList) {
-//			System.out.println(s1[1]);
 			if (!s1[0].equals("")) {
 				if (s1[1].equals(XmlParser.TAG)) {
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
 					k++;
-//					System.out.println("tag" + k);
-					str.append(s1[0] + "\n");
+					str.append("<"+s1[0]+">" + "\n");
 				}
 				if (s1[1].equals(XmlParser.ELEMENT)) {
 					for (int j = 0; j < k; j++) {
@@ -214,10 +213,11 @@ public class XmlParser {
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
-					str.append(s1[0] + "\n");
+					str.append("<"+s1[0]+">" + "\n");
 				}
 			}
 		}
+		
 
 		System.out.println(str);
 
