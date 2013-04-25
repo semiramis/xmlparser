@@ -11,31 +11,27 @@ import java.io.FileReader;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileFilter;
 
 public class MainFrame extends JFrame {
 
-	public static final int WIDTH = 400;
-	public static final int HEIGHT = 300;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 600;
 
 	JPanel panel_ta;
 	JPanel panel_menu;
 	JTextArea ta_xmlOut;
 	JTextField tf;
 	String[] operations = new String[] { "xml", "txt" };
-	JRadioButton rb_xml;
-	JRadioButton rb_txt;
+	JRadioButton rb_check;
+	JRadioButton rb_print;
 
 	JButton btn_save;
 	JButton btn_read;
@@ -80,14 +76,13 @@ public class MainFrame extends JFrame {
 
 		// *** JTextArea ***//
 		ta_xmlOut = new JTextArea();
-		ta_xmlOut.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED,
-				Color.DARK_GRAY, Color.LIGHT_GRAY));
-		JScrollPane sp = new JScrollPane(ta_xmlOut);
+		ta_xmlOut.setEditable(false);
+		JScrollPane sp = new JScrollPane(
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		sp.setViewportView(ta_xmlOut);
 		panel_ta.add(sp, BorderLayout.CENTER);
-		sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		setVisible(true);
-		sp.add(ta_xmlOut);
-		
 
 		// *** JTextField ***//
 		tf = new JTextField("test");
@@ -104,15 +99,15 @@ public class MainFrame extends JFrame {
 		btn_save.addActionListener(listener);
 
 		// *** JRadioButton ***//
-		rb_xml = new JRadioButton("xml");
-		rb_xml.setSelected(true);
-		rb_txt = new JRadioButton("txt");
-		rb_txt.setSelected(false);
-		panel_menu.add(rb_xml);
-		panel_menu.add(rb_txt);
+		rb_check = new JRadioButton("check");
+		rb_check.setSelected(true);
+		rb_print = new JRadioButton("print");
+		rb_print.setSelected(false);
+		panel_menu.add(rb_check);
+		panel_menu.add(rb_print);
 
-		rb_xml.addActionListener(listener);
-		rb_txt.addActionListener(listener);
+		rb_check.addActionListener(listener);
+		rb_print.addActionListener(listener);
 
 		// *** JFileChooser ***//
 		chooser = new JFileChooser();
@@ -134,14 +129,14 @@ public class MainFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (e.getSource() == rb_txt) {
+			if (e.getSource() == rb_print) {
 				System.out.println("txt");
-				rb_xml.setSelected(!rb_xml.isSelected());
+				rb_check.setSelected(!rb_check.isSelected());
 			}
 
-			if (e.getSource() == rb_xml) {
+			if (e.getSource() == rb_check) {
 				System.out.println("xml");
-				rb_txt.setSelected(!rb_txt.isSelected());
+				rb_print.setSelected(!rb_print.isSelected());
 			}
 
 			if (e.getSource() == btn_read) {
@@ -157,13 +152,17 @@ public class MainFrame extends JFrame {
 								new FileReader(file));
 						System.out.println("file ausgelesen aus: "
 								+ file.getAbsolutePath());
+						StringBuilder sb = new StringBuilder();
 						while ((string = reader.readLine()) != null) {
 							System.out.println(string);
-							ta_xmlOut.append("\n" + string);
+							sb.append(string);
 							// ta_xmlOut.setText(ta_xmlOut + "\n" + string);
-						}
-					} catch (Exception ex) {
 
+						}
+						ta_xmlOut.setText(XmlParser.parse(sb.toString(),
+								rb_print.isSelected()));
+					} catch (Exception ex) {
+						ta_xmlOut.setText(ex.getMessage());
 					}
 				}
 			}
@@ -173,13 +172,12 @@ public class MainFrame extends JFrame {
 				chooser.showSaveDialog(null);
 			}
 		}
-
 	}
 
 	// *** FileTypeFilter ***//
 
 	public class FileTypeFilter extends FileFilter {
-		private String extension;
+		private final String extension;
 
 		public FileTypeFilter(String extension) {
 			this.extension = extension;
@@ -198,9 +196,9 @@ public class MainFrame extends JFrame {
 			return ("*." + extension);
 		}
 	}
-    //
-    //public static void main(String[] args) {
-	//	new MainFrame();
-	//}
+	//
+	// public static void main(String[] args) {
+	// new MainFrame();
+	// }
 
 }
