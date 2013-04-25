@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -32,6 +33,7 @@ public class MainFrame extends JFrame {
 	String[] operations = new String[] { "xml", "txt" };
 	JRadioButton rb_check;
 	JRadioButton rb_print;
+	ButtonGroup bg;
 
 	JButton btn_save;
 	JButton btn_read;
@@ -100,9 +102,13 @@ public class MainFrame extends JFrame {
 
 		// *** JRadioButton ***//
 		rb_check = new JRadioButton("check");
-		rb_check.setSelected(true);
+		rb_check.setSelected(false);
 		rb_print = new JRadioButton("print");
-		rb_print.setSelected(false);
+		rb_print.setSelected(true);
+
+		// bg.add(rb_check);
+		// bg.add(rb_print);
+
 		panel_menu.add(rb_check);
 		panel_menu.add(rb_print);
 
