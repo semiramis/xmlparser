@@ -5,10 +5,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-
-
-
 /**
  * Let's play a game :)
  * 
@@ -17,7 +13,8 @@ import java.util.regex.Pattern;
  */
 public class XmlParser {
 
-	public static final Pattern LEGAL_TAG_START = Pattern.compile("([a-z]|[A-Z]|\\-|\\.|:|_)");
+	public static final Pattern LEGAL_TAG_START = Pattern
+			.compile("([a-z]|[A-Z]|\\-|\\.|:|_)");
 	public static final String TAG = "TAG";
 	public static final String CLOSING_TAG = "CLOSING_TAG";
 	public static final String ELEMENT = "ELEMENT";
@@ -25,14 +22,14 @@ public class XmlParser {
 
 	/*
 	 * parse erwartet einen String im xml Format folgende Syntax Regeln werden
-	 * ber�cksichtigt: passende opening und closing tags erkennt empty tags
-	 * und ber�cksichtigt sie nicht < au�erhalb eines tags wirft eine
-	 * exception > au�erhalb eines tags wird erkannt und nicht
-	 * ber�cksichtigt tagnamen in case sensitiv und beliebig vielen
-	 * leerzeichen vor der ausgabe wird gepr�ft, ob alle opening tags
-	 * geschlossen wurden, die datei also vollst�ndig abgearbeitet werden
-	 * konnte es werden nur tagnamen als solche erkannte, die mit einem der
-	 * folgenden zeichen beginnen: "Buchstabe, -, ., :, _"
+	 * ber�cksichtigt: passende opening und closing tags erkennt empty tags und
+	 * ber�cksichtigt sie nicht < au�erhalb eines tags wirft eine exception >
+	 * au�erhalb eines tags wird erkannt und nicht ber�cksichtigt tagnamen in
+	 * case sensitiv und beliebig vielen leerzeichen vor der ausgabe wird
+	 * gepr�ft, ob alle opening tags geschlossen wurden, die datei also
+	 * vollst�ndig abgearbeitet werden konnte es werden nur tagnamen als solche
+	 * erkannte, die mit einem der folgenden zeichen beginnen:
+	 * "Buchstabe, -, ., :, _"
 	 * 
 	 * @TODO kommentare erkennung eines kommentars mit richtiger syntax
 	 * 
@@ -44,7 +41,8 @@ public class XmlParser {
 	 * verglichen. stimmen die strings nicht �berein, wird eine exception
 	 * ausgel�st.
 	 */
-	public static String parse(String text, boolean print) throws XmlSyntaxErrorException, RootElementNotClosedException {
+	public static String parse(String text, boolean print)
+			throws XmlSyntaxErrorException, RootElementNotClosedException {
 
 		final int ERROR_AREA = 30;
 
@@ -68,17 +66,20 @@ public class XmlParser {
 													// pops the last opened
 
 		if (chars[0] != '<') {
-			throw new XmlSyntaxErrorException("document must start with '<'", rowCount, 0, text, ERROR_AREA);
+			throw new XmlSyntaxErrorException("document must start with '<'",
+					rowCount, 0, text, ERROR_AREA);
 		}
 
 		for (int i = 0; i < chars.length; i++) {
 
 			switch (chars[i]) {
 			case '<':
-				if(!element.toString().equals(""))
-				sList.add(new String[] { element.toString(), XmlParser.ELEMENT });
+				if (!element.toString().equals(""))
+					sList.add(new String[] { element.toString(),
+							XmlParser.ELEMENT });
 				if (inTag) {
-					throw new XmlSyntaxErrorException("illegal '<'", rowCount, i, text, ERROR_AREA);
+					throw new XmlSyntaxErrorException("illegal '<'", rowCount,
+							i, text, ERROR_AREA);
 				}
 
 				m = LEGAL_TAG_START.matcher(Character.toString(chars[i + 1]));
@@ -90,12 +91,14 @@ public class XmlParser {
 					} else if (chars[i + 1] == '/') { // schliessender tag
 						inClosingTag = true;
 						inTag = true;
-					} else if (chars[i + 1] == '!' && chars[i + 2] == '-' && chars[i + 3] == '-') { // kommentar
+					} else if (chars[i + 1] == '!' && chars[i + 2] == '-'
+							&& chars[i + 3] == '-') { // kommentar
 						inComment = true;
 					} else if (chars[i + 1] == '?') {// process instruction
 						inPI = true;
 					} else {
-						throw new XmlSyntaxErrorException("illegal tag start", rowCount, i, text, ERROR_AREA);
+						throw new XmlSyntaxErrorException("illegal tag start",
+								rowCount, i, text, ERROR_AREA);
 					}
 				}
 
@@ -103,28 +106,30 @@ public class XmlParser {
 
 			case '>':
 				if (inTag) {
-					if (inComment && chars[i - 2] == '-' && chars[i - 1] == '-') {
-						inComment = false;
-					} else if (!inComment && !inQuotes && !inPI) {
+					if (!inComment && !inQuotes && !inPI) {
 
 						if (chars[i - 1] != '/') {
 							if (inClosingTag) {
 								String opening = stack.pop().trim();
-								String closing = tag.toString().substring(2).trim();
+								String closing = tag.toString().substring(2)
+										.trim();
 
-								sList.add(new String[] { closing, XmlParser.CLOSING_TAG });
+								sList.add(new String[] { closing,
+										XmlParser.CLOSING_TAG });
 
 								if (!opening.equals(closing)) {
 
-									throw new XmlSyntaxErrorException("\"</" + opening + ">\" expected", rowCount, i,
-											text, ERROR_AREA);
+									throw new XmlSyntaxErrorException("\"</"
+											+ opening + ">\" expected",
+											rowCount, i, text, ERROR_AREA);
 
 								}
 							} else {
 
 								stack.add(tag.toString().substring(1));
-								sList.add(new String[] { stack.lastElement(), XmlParser.TAG });
-								
+								sList.add(new String[] { stack.lastElement(),
+										XmlParser.TAG });
+
 							}
 
 						}
@@ -134,14 +139,18 @@ public class XmlParser {
 						tag = tag.delete(0, tag.length());
 					} else if (inPI && chars[i - 1] == '?') {
 						// ende der process instruction
-//						processInstruction.append("\n\n");
-//						sList.add(new String[]{processInstruction.toString(), XmlParser.PROCESS_INSTR});
+						// processInstruction.append("\n\n");
+						// sList.add(new String[]{processInstruction.toString(),
+						// XmlParser.PROCESS_INSTR});
 						inPI = false;
 					} else if (inPI && chars[i - 1] != '?') {
 						// syntaxfehler bei erstellung des PI
 					}
 				}
 
+				if (inComment && chars[i - 2] == '-' && chars[i - 1] == '-') {
+					inComment = false;
+				}
 				break;
 
 			case '"':
@@ -165,15 +174,15 @@ public class XmlParser {
 
 				// Hier werden die elemente-strings gebaut
 			default:
-				if (!inComment && !inTag && !inClosingTag &&!inPI) {
+				if (!inComment && !inTag && !inClosingTag && !inPI) {
 					element.append(chars[i]);
 				} else {
-					if(!element.equals(""))
-					element = new StringBuilder();
+					if (!element.equals(""))
+						element = new StringBuilder();
 				}
-				
-				if(inPI){
-//					sList.add(new String[]{"bd", XmlParser.PROCESS_INSTR});
+
+				if (inPI) {
+					// sList.add(new String[]{"bd", XmlParser.PROCESS_INSTR});
 					inPI = false;
 				}
 				break;
@@ -184,18 +193,18 @@ public class XmlParser {
 
 			if (inTag) {
 				tag.append(chars[i]);
-			} 
+			}
 			xmlDoc.append(chars[i]);
 		}
 
 		if (stack.empty() && print) {
-			
+
 			return printXml(sList);
-			
+
 		} else {
-			throw new RootElementNotClosedException("There are opened Elements left...");
+			throw new RootElementNotClosedException(
+					"There are opened Elements left...");
 		}
-		
 
 	}
 
@@ -210,7 +219,7 @@ public class XmlParser {
 						str.append("\t");
 					}
 					k++;
-					str.append("<"+s1[0]+">" + "\n");
+					str.append("<" + s1[0] + ">" + "\n");
 				}
 				if (s1[1].equals(XmlParser.ELEMENT)) {
 					for (int j = 0; j < k; j++) {
@@ -223,15 +232,14 @@ public class XmlParser {
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
-					str.append("</"+s1[0]+">" + "\n");
+					str.append("</" + s1[0] + ">" + "\n");
 				}
-				if(s1[1].equals(XmlParser.PROCESS_INSTR)){
-					str.append(s1[0]+"\n\n");
+				if (s1[1].equals(XmlParser.PROCESS_INSTR)) {
+					str.append(s1[0] + "\n\n");
 
 				}
 			}
 		}
-		
 
 		System.out.println(str);
 
