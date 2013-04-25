@@ -44,7 +44,7 @@ public class XmlParser {
 	 * verglichen. stimmen die strings nicht �berein, wird eine exception
 	 * ausgel�st.
 	 */
-	public static void parse(String text, boolean print) throws XmlSyntaxErrorException, RootElementNotClosedException {
+	public static String parse(String text, boolean print) throws XmlSyntaxErrorException, RootElementNotClosedException {
 
 		final int ERROR_AREA = 30;
 
@@ -134,7 +134,7 @@ public class XmlParser {
 						tag = tag.delete(0, tag.length());
 					} else if (inPI && chars[i - 1] == '?') {
 						// ende der process instruction
-						processInstruction.append("\n\n");
+//						processInstruction.append("\n\n");
 //						sList.add(new String[]{processInstruction.toString(), XmlParser.PROCESS_INSTR});
 						inPI = false;
 					} else if (inPI && chars[i - 1] != '?') {
@@ -165,7 +165,7 @@ public class XmlParser {
 
 				// Hier werden die elemente-strings gebaut
 			default:
-				if (!inComment && !inTag && !inClosingTag) {
+				if (!inComment && !inTag && !inClosingTag &&!inPI) {
 					element.append(chars[i]);
 				} else {
 					if(!element.equals(""))
@@ -173,7 +173,7 @@ public class XmlParser {
 				}
 				
 				if(inPI){
-					sList.add(new String[]{processInstruction.toString(), XmlParser.PROCESS_INSTR});
+//					sList.add(new String[]{"bd", XmlParser.PROCESS_INSTR});
 					inPI = false;
 				}
 				break;
@@ -189,7 +189,9 @@ public class XmlParser {
 		}
 
 		if (stack.empty() && print) {
-			printXml(sList);
+			
+			return printXml(sList);
+			
 		} else {
 			throw new RootElementNotClosedException("There are opened Elements left...");
 		}
@@ -221,11 +223,11 @@ public class XmlParser {
 					for (int j = 0; j < k; j++) {
 						str.append("\t");
 					}
-					str.append("<"+s1[0]+">" + "\n");
+					str.append("</"+s1[0]+">" + "\n");
 				}
 				if(s1[1].equals(XmlParser.PROCESS_INSTR)){
-//					str.append("\n\n"+s1[0]+"\n\n");
-					System.out.println("OOCRS/GSU");
+					str.append(s1[0]+"\n\n");
+
 				}
 			}
 		}
