@@ -224,7 +224,8 @@ public class XmlParser {
 					str.append("<"+s1[0]+">" + "\n");
 				}
 				if(s1[1].equals(XmlParser.PROCESS_INSTR)){
-					str.append(s1[0] + "\n\n");
+//					str.append("\n\n"+s1[0]+"\n\n");
+					System.out.println("OOCRS/GSU");
 				}
 			}
 		}
