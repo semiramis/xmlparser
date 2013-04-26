@@ -15,7 +15,7 @@ public class ParserTest {
 				"</eintrag><eintrag><stichwort>Köln</stichwort><eintragstext>Köln ist eine Stadt, die ...</eintragstext>"+
 				"</eintrag></verzeichnis>";
 		try {
-			XmlParser.parse(xml3, true);
+			System.out.println(XmlParser.parse(xml3, true));
 		} catch (XmlSyntaxErrorException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

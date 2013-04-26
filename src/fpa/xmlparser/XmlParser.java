@@ -20,27 +20,7 @@ public class XmlParser {
 	public static final String ELEMENT = "ELEMENT";
 	public static final String PROCESS_INSTR = "PROCESS_INSTRUCTION";
 
-	/*
-	 * parse erwartet einen String im xml Format folgende Syntax Regeln werden
-	 * ber�cksichtigt: passende opening und closing tags erkennt empty tags und
-	 * ber�cksichtigt sie nicht < au�erhalb eines tags wirft eine exception >
-	 * au�erhalb eines tags wird erkannt und nicht ber�cksichtigt tagnamen in
-	 * case sensitiv und beliebig vielen leerzeichen vor der ausgabe wird
-	 * gepr�ft, ob alle opening tags geschlossen wurden, die datei also
-	 * vollst�ndig abgearbeitet werden konnte es werden nur tagnamen als solche
-	 * erkannte, die mit einem der folgenden zeichen beginnen:
-	 * "Buchstabe, -, ., :, _"
-	 * 
-	 * @TODO kommentare erkennung eines kommentars mit richtiger syntax
-	 * 
-	 * arbeitsweise der methode: string wird char f�r char gelesen. bestimmte
-	 * symbole werden auf konditionen gepr�ft und als openingtag, closingtag,
-	 * emptytag, kommentar oder nichts von alledem erkannt. dementsprechend wird
-	 * ein opening tag auf den stack geschmissen. der n�chste closingtag, der
-	 * erkannt wird, wird direkt mit dem obersten opening tag auf dem stack
-	 * verglichen. stimmen die strings nicht �berein, wird eine exception
-	 * ausgel�st.
-	 */
+
 	public static String parse(String text, boolean print)
 			throws XmlSyntaxErrorException, RootElementNotClosedException {
 
@@ -201,7 +181,11 @@ public class XmlParser {
 
 			return printXml(sList);
 
-		} else {
+		} else if(stack.empty() && !print){
+			return "well-formed document\nsyntax correct";
+		}
+		
+		else {
 			throw new RootElementNotClosedException(
 					"There are opened Elements left...");
 		}
